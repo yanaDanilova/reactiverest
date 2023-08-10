@@ -65,4 +65,7 @@ public class TaskSchedule {
                 ", taskDetails='" + taskDetails + '\'' +
                 '}';
     }
+
+    public void setId(int count) {
+    }
 }
