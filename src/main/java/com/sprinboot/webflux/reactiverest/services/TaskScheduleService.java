@@ -9,8 +9,8 @@ public interface TaskScheduleService {
 
     Mono<TaskSchedule> getTaskScheduleById(int id);
 
-    Mono<TaskSchedule> create(TaskSchedule taskSchedule);
+    Mono<Boolean> create(TaskSchedule taskSchedule);
 
-    Mono<TaskSchedule> update(TaskSchedule updatedTaskSchedule, int id);
-    Mono<TaskSchedule> deleteTaskScheduleById(int id);
+    Mono<Boolean> update(TaskSchedule updatedTaskSchedule, int id);
+    Mono<Boolean> deleteTaskScheduleById(int id);
 }

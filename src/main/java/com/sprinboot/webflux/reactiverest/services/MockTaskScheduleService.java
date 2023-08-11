@@ -1,11 +1,8 @@
 package com.sprinboot.webflux.reactiverest.services;
-
 import com.sprinboot.webflux.reactiverest.entities.TaskSchedule;
-
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.util.HashMap;
 
 @Service
@@ -36,31 +33,34 @@ public class MockTaskScheduleService implements TaskScheduleService{
     }
 
     @Override
-    public Mono<TaskSchedule> create(TaskSchedule taskSchedule) {
+    public Mono<Boolean> create(TaskSchedule taskSchedule) {
         count++;
         taskSchedule.setId(count);
         database.put(count, taskSchedule);
-        return Mono.just(taskSchedule);
+        return Mono.just(true);
     }
 
     @Override
-    public Mono<TaskSchedule> update(TaskSchedule updatedTaskSchedule, int id) {
+    public Mono<Boolean> update(TaskSchedule updatedTaskSchedule, int id) {
         TaskSchedule taskSchedule = database.get(id);
         if (taskSchedule != null) {
             taskSchedule.setEmployeeName(updatedTaskSchedule.getEmployeeName());
             taskSchedule.setTaskDate(updatedTaskSchedule.getTaskDate());
             taskSchedule.setAssignedTask(updatedTaskSchedule.getAssignedTask());
             taskSchedule.setTaskDetails(updatedTaskSchedule.getTaskDetails());
-            database.put(taskSchedule.getId(), taskSchedule);
-            return Mono.just(taskSchedule);
-        } else {
-            return Mono.empty();
+            database.put(id, taskSchedule);
+            return Mono.just(true);
+        }else{
+            return Mono.just(false);
         }
     }
 
     @Override
-    public Mono<TaskSchedule> deleteTaskScheduleById(int id) {
-       TaskSchedule taskSchedule =  database.remove(id);
-       return Mono.just(taskSchedule);
+    public Mono<Boolean> deleteTaskScheduleById(int id) {
+       if(database.remove(id)!=null){
+           return Mono.just(true);
+       }else{
+           return Mono.just(false);
+       }
     }
 }
