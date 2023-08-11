@@ -57,10 +57,7 @@ public class MockTaskScheduleService implements TaskScheduleService{
 
     @Override
     public Mono<Boolean> deleteTaskScheduleById(int id) {
-       if(database.remove(id)!=null){
-           return Mono.just(true);
-       }else{
-           return Mono.just(false);
-       }
+        return Mono.just(database.remove(id)!=null);
     }
+
 }
