@@ -21,6 +21,15 @@ public class TaskScheduleController {
         this.taskScheduleService = taskScheduleService;
     }
 
+    @GetMapping("/index")
+    @Operation(description = "Index of this controller")
+    public Mono<String> index(){
+        int i = 0;
+        int j = 1;
+        int k = j/i;
+        return Mono.just("Hello World!");
+    }
+
     @GetMapping()
     @Operation(description = "get the entire list of task schedule")
     public Flux<TaskSchedule> getAllTaskSchedule(){

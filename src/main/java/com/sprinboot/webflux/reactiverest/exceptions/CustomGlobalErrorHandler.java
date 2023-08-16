@@ -46,10 +46,8 @@ public class CustomGlobalErrorHandler implements ErrorWebExceptionHandler {
     }
     private ExceptionResponse generateExceptionObject(ServerWebExchange exchange, Throwable ex) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
-        if(ex instanceof ReactiveRestNotFountException){
             exceptionResponse.setHttpStatus(HttpStatus.BAD_REQUEST);
             exceptionResponse.setMessage(ex.getMessage());
-        }
         return exceptionResponse;
     }
     private Mono<Void> handleException(ServerWebExchange exchange, Throwable ex) {
