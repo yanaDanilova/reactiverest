@@ -1,6 +1,7 @@
 package com.sprinboot.webflux.reactiverest.controllers;
 
 import com.sprinboot.webflux.reactiverest.entities.TaskSchedule;
+import com.sprinboot.webflux.reactiverest.exceptions.ReactiveRestNotFountException;
 import com.sprinboot.webflux.reactiverest.services.TaskScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +29,12 @@ public class TaskScheduleController {
     @GetMapping("/{id}")
     @Operation(description = "get a task schedule by ID")
     public Mono<ResponseEntity<TaskSchedule>> getTaskScheduleById(@PathVariable int id){
-        Mono<TaskSchedule> taskScheduleMono = taskScheduleService.getTaskScheduleById(id);
+        throw new ReactiveRestNotFountException("TaskSchedule is not found");
+/*        Mono<TaskSchedule> taskScheduleMono = taskScheduleService.getTaskScheduleById(id);
         return taskScheduleMono
                 .map(taskSchedule -> ResponseEntity.ok().body(taskSchedule))
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+*/
     }
     @PostMapping
     @Operation(description = "Create a new Task Schedule")
