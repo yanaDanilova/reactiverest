@@ -1,6 +1,14 @@
 package com.sprinboot.webflux.reactiverest.entities;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class TaskSchedule {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String employeeName;
     private String taskDate;
@@ -54,6 +62,8 @@ public class TaskSchedule {
     public String getTaskDetails() {
         return taskDetails;
     }
+    public void setId(int count) {
+    }
 
     @Override
     public String toString() {
@@ -64,8 +74,5 @@ public class TaskSchedule {
                 ", assignedTask='" + assignedTask + '\'' +
                 ", taskDetails='" + taskDetails + '\'' +
                 '}';
-    }
-
-    public void setId(int count) {
     }
 }
