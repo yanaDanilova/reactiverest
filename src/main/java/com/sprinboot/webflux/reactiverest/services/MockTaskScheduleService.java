@@ -1,4 +1,5 @@
 package com.sprinboot.webflux.reactiverest.services;
+import com.sprinboot.webflux.reactiverest.entities.Employee;
 import com.sprinboot.webflux.reactiverest.entities.TaskSchedule;
 import com.sprinboot.webflux.reactiverest.exceptions.ReactiveRestNotFountException;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class MockTaskScheduleService implements TaskScheduleService{
         this.database = new HashMap<>() {{
             put(1, new TaskSchedule(
                     1,
-                    "John Smith",
+                    new Employee(1,"Tom","developing"),
                     "06.08.2023",
                     "pending project",
                     "work with project"));
@@ -45,7 +46,7 @@ public class MockTaskScheduleService implements TaskScheduleService{
     public Mono<Boolean> update(TaskSchedule updatedTaskSchedule, int id) {
         TaskSchedule taskSchedule = database.get(id);
         if (taskSchedule != null) {
-            taskSchedule.setEmployeeName(updatedTaskSchedule.getEmployeeName());
+            taskSchedule.setEmployee(updatedTaskSchedule.getEmployee());
             taskSchedule.setTaskDate(updatedTaskSchedule.getTaskDate());
             taskSchedule.setAssignedTask(updatedTaskSchedule.getAssignedTask());
             taskSchedule.setTaskDetails(updatedTaskSchedule.getTaskDetails());

@@ -1,34 +1,34 @@
 package com.sprinboot.webflux.reactiverest.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class TaskSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String employeeName;
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "employee_id")
+    private Employee employee;
     private String taskDate;
     private String assignedTask;
     private String taskDetails;
 
-    public TaskSchedule(int id, String employeeName, String taskDate, String assignedTask, String taskDetails) {
+
+
+    public TaskSchedule() {
+    }
+
+    public TaskSchedule(int id, Employee employee, String taskDate, String assignedTask, String taskDetails) {
         this.id = id;
-        this.employeeName = employeeName;
+        this.employee = employee;
         this.taskDate = taskDate;
         this.assignedTask = assignedTask;
         this.taskDetails = taskDetails;
     }
 
-    public TaskSchedule() {
-    }
-
-
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     public void setTaskDate(String taskDate) {
@@ -47,8 +47,8 @@ public class TaskSchedule {
         return id;
     }
 
-    public String getEmployeeName() {
-        return employeeName;
+    public Employee getEmployee() {
+        return employee;
     }
 
     public String getTaskDate() {
@@ -65,14 +65,5 @@ public class TaskSchedule {
     public void setId(int count) {
     }
 
-    @Override
-    public String toString() {
-        return "TaskSchedule{" +
-                "id=" + id +
-                ", employeeName='" + employeeName + '\'' +
-                ", taskDate=" + taskDate +
-                ", assignedTask='" + assignedTask + '\'' +
-                ", taskDetails='" + taskDetails + '\'' +
-                '}';
-    }
+
 }
