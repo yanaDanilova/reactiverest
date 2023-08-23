@@ -1,14 +1,13 @@
 package com.sprinboot.webflux.reactiverest.services;
 import com.sprinboot.webflux.reactiverest.entities.Employee;
 import com.sprinboot.webflux.reactiverest.entities.TaskSchedule;
-import com.sprinboot.webflux.reactiverest.exceptions.ReactiveRestNotFountException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.HashMap;
 
 @Service
-public class MockTaskScheduleService implements TaskScheduleService{
+public class MockTaskScheduleService implements ITaskScheduleService {
 
     private HashMap<Integer,TaskSchedule> database;
     private int count;
@@ -16,7 +15,7 @@ public class MockTaskScheduleService implements TaskScheduleService{
         this.database = new HashMap<>() {{
             put(1, new TaskSchedule(
                     1,
-                    new Employee(1,"Tom","developing"),
+                    new Employee("Tom","developing"),
                     "06.08.2023",
                     "pending project",
                     "work with project"));
@@ -35,11 +34,11 @@ public class MockTaskScheduleService implements TaskScheduleService{
     }
 
     @Override
-    public Mono<Boolean> create(TaskSchedule taskSchedule) {
+    public Mono<TaskSchedule> create(TaskSchedule taskSchedule) {
         count++;
         taskSchedule.setId(count);
         database.put(count, taskSchedule);
-        return Mono.just(true);
+        return Mono.just(null);
     }
 
     @Override
@@ -48,7 +47,7 @@ public class MockTaskScheduleService implements TaskScheduleService{
         if (taskSchedule != null) {
             taskSchedule.setEmployee(updatedTaskSchedule.getEmployee());
             taskSchedule.setTaskDate(updatedTaskSchedule.getTaskDate());
-            taskSchedule.setAssignedTask(updatedTaskSchedule.getAssignedTask());
+  //          taskSchedule.setAssignedTask(updatedTaskSchedule.getAssignedTask());
             taskSchedule.setTaskDetails(updatedTaskSchedule.getTaskDetails());
             database.put(id, taskSchedule);
             return Mono.just(true);

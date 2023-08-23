@@ -3,15 +3,20 @@ package com.sprinboot.webflux.reactiverest.entities;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "taskschedule")
 public class TaskSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne
-    @JoinColumn(referencedColumnName = "employee_id")
+    @JoinColumn(referencedColumnName = "id")
     private Employee employee;
+
+    @Column(name = "taskDate")
     private String taskDate;
+    @Column(name = "assignedTask")
     private String assignedTask;
+    @Column(name = "taskDetails")
     private String taskDetails;
 
 

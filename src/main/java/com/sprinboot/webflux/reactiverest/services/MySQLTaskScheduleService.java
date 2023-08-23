@@ -1,22 +1,28 @@
 package com.sprinboot.webflux.reactiverest.services;
 
+import com.sprinboot.webflux.reactiverest.entities.Employee;
 import com.sprinboot.webflux.reactiverest.entities.TaskSchedule;
 import com.sprinboot.webflux.reactiverest.exceptions.ReactiveRestNotFountException;
+import com.sprinboot.webflux.reactiverest.repositories.EmployeeRepository;
 import com.sprinboot.webflux.reactiverest.repositories.TaskScheduleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 
 @Service
-public class MySQLTaskScheduleService implements TaskScheduleService{
+@Primary
+public class MySQLTaskScheduleService implements ITaskScheduleService {
 
     private TaskScheduleRepository taskScheduleRepository;
+    private EmployeeRepository employeeRepository;
 
-    @Autowired
-    public MySQLTaskScheduleService(TaskScheduleRepository taskScheduleRepository) {
+    public MySQLTaskScheduleService(TaskScheduleRepository taskScheduleRepository, EmployeeRepository employeeRepository) {
         this.taskScheduleRepository = taskScheduleRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     @Override
@@ -27,28 +33,34 @@ public class MySQLTaskScheduleService implements TaskScheduleService{
     @Override
     public Mono<TaskSchedule> getTaskScheduleById(int id) {
         return Mono.fromCallable(()->taskScheduleRepository.findById(id)
+
                 .orElseThrow(()->new ReactiveRestNotFountException("Resource is not found")));
     }
 
     @Override
-    public Mono<Boolean> create(TaskSchedule taskSchedule) {
-        return Mono.fromCallable(()->taskScheduleRepository.save(taskSchedule)!=null);
+    public Mono<TaskSchedule> create(TaskSchedule taskSchedule) {
+        employeeRepository.save(taskSchedule.getEmployee());
+        TaskSchedule taskSchedule1 = taskScheduleRepository.save(taskSchedule);
+        return Mono.just(taskSchedule1);
     }
 
     @Override
     public Mono<Boolean> update(TaskSchedule updatedTaskSchedule, int id) {
-        return Mono.fromCallable(() -> {
-            return taskScheduleRepository.findById(id)
-                    .map(taskSchedule -> {
-                        taskSchedule.setEmployee(updatedTaskSchedule.getEmployee());
-                        taskSchedule.setTaskDate(updatedTaskSchedule.getTaskDate());
-                        taskSchedule.setAssignedTask(updatedTaskSchedule.getAssignedTask());
-                        taskSchedule.setTaskDetails(updatedTaskSchedule.getTaskDetails());
-                        taskScheduleRepository.save(taskSchedule);
-                        return true;
-                    })
-                    .orElseThrow(() -> new ReactiveRestNotFountException("Resource is not found"));
-        });
+        Optional<Employee> optionalEmployee = employeeRepository.findById(updatedTaskSchedule.getEmployee().getId());
+        if(optionalEmployee.isEmpty()){
+            Employee newEmployee = new Employee(updatedTaskSchedule.getEmployee().getName(),updatedTaskSchedule.getEmployee().getDepartment());
+            employeeRepository.save(newEmployee);
+        }
+        taskScheduleRepository.findById(id).map(taskSchedule -> {
+                    taskSchedule.setEmployee(updatedTaskSchedule.getEmployee());
+                    taskSchedule.setTaskDate(updatedTaskSchedule.getTaskDate());
+                    taskSchedule.setAssignedTask(updatedTaskSchedule.getAssignedTask());
+                    taskSchedule.setTaskDetails(updatedTaskSchedule.getTaskDetails());
+                    taskScheduleRepository.save(taskSchedule);
+                    return Mono.just(true);
+                })
+                .orElseThrow(() -> new ReactiveRestNotFountException("Resource is not found"));
+        return Mono.just(true);
     }
     @Override
     public Mono<Boolean> deleteTaskScheduleById(int id) {
