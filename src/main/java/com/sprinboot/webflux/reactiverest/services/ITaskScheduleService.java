@@ -1,16 +1,17 @@
 package com.sprinboot.webflux.reactiverest.services;
 
+import com.sprinboot.webflux.reactiverest.dtos.TaskScheduleDto;
 import com.sprinboot.webflux.reactiverest.entities.TaskSchedule;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ITaskScheduleService {
-    Flux<TaskSchedule> getAllTaskSchedule();
+    Flux<TaskScheduleDto> getAllTaskSchedule();
 
-    Mono<TaskSchedule> getTaskScheduleById(int id);
+    Mono<TaskScheduleDto> getTaskScheduleById(int id);
 
-    Mono<TaskSchedule> create(TaskSchedule taskSchedule);
+    Mono<TaskScheduleDto> create(TaskScheduleDto taskScheduleDto);
 
-    Mono<Boolean> update(TaskSchedule updatedTaskSchedule, int id);
+    Mono<Boolean> update(TaskScheduleDto updatedTaskScheduleDto, int id);
     Mono<Boolean> deleteTaskScheduleById(int id);
 }

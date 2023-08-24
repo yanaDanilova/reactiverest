@@ -1,8 +1,10 @@
 package com.sprinboot.webflux.reactiverest.services;
 
+import com.sprinboot.webflux.reactiverest.dtos.TaskScheduleDto;
 import com.sprinboot.webflux.reactiverest.entities.Employee;
 import com.sprinboot.webflux.reactiverest.entities.TaskSchedule;
 import com.sprinboot.webflux.reactiverest.exceptions.ReactiveRestNotFountException;
+import com.sprinboot.webflux.reactiverest.mappers.TaskScheduleMapper;
 import com.sprinboot.webflux.reactiverest.repositories.EmployeeRepository;
 import com.sprinboot.webflux.reactiverest.repositories.TaskScheduleRepository;
 import org.springframework.context.annotation.Primary;
@@ -11,6 +13,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -26,36 +29,30 @@ public class MySQLTaskScheduleService implements ITaskScheduleService {
     }
 
     @Override
-    public Flux<TaskSchedule> getAllTaskSchedule() {
-       return Flux.fromIterable(taskScheduleRepository.findAll());
+    public Flux<TaskScheduleDto> getAllTaskSchedule() {
+       return Flux.fromIterable(taskScheduleRepository.findAll().stream().map(TaskScheduleMapper.INSTANCE::toDto).collect(Collectors.toList()));
     }
 
     @Override
-    public Mono<TaskSchedule> getTaskScheduleById(int id) {
-        return Mono.fromCallable(()->taskScheduleRepository.findById(id)
-
+    public Mono<TaskScheduleDto> getTaskScheduleById(int id) {
+        return Mono.just(taskScheduleRepository.findById(id).map(TaskScheduleMapper.INSTANCE::toDto)
                 .orElseThrow(()->new ReactiveRestNotFountException("Resource is not found")));
     }
 
     @Override
-    public Mono<TaskSchedule> create(TaskSchedule taskSchedule) {
-        employeeRepository.save(taskSchedule.getEmployee());
-        TaskSchedule taskSchedule1 = taskScheduleRepository.save(taskSchedule);
-        return Mono.just(taskSchedule1);
+    public Mono<TaskScheduleDto> create(TaskScheduleDto newTaskScheduleDto) {
+        TaskSchedule taskSchedule = TaskScheduleMapper.INSTANCE.toEntity(newTaskScheduleDto);
+        return Mono.just(TaskScheduleMapper.INSTANCE.toDto(taskScheduleRepository.save(taskSchedule)));
+
     }
 
     @Override
-    public Mono<Boolean> update(TaskSchedule updatedTaskSchedule, int id) {
-        Optional<Employee> optionalEmployee = employeeRepository.findById(updatedTaskSchedule.getEmployee().getId());
-        if(optionalEmployee.isEmpty()){
-            Employee newEmployee = new Employee(updatedTaskSchedule.getEmployee().getName(),updatedTaskSchedule.getEmployee().getDepartment());
-            employeeRepository.save(newEmployee);
-        }
+    public Mono<Boolean> update(TaskScheduleDto updatedTaskScheduleDto, int id) {
         taskScheduleRepository.findById(id).map(taskSchedule -> {
-                    taskSchedule.setEmployee(updatedTaskSchedule.getEmployee());
-                    taskSchedule.setTaskDate(updatedTaskSchedule.getTaskDate());
-                    taskSchedule.setAssignedTask(updatedTaskSchedule.getAssignedTask());
-                    taskSchedule.setTaskDetails(updatedTaskSchedule.getTaskDetails());
+                    taskSchedule.setEmployee(employeeRepository.findById(updatedTaskScheduleDto.getEmployee_id()).get());
+                    taskSchedule.setTaskDate(updatedTaskScheduleDto.getTaskDate());
+                    taskSchedule.setAssignedTask(updatedTaskScheduleDto.getAssignedTask());
+                    taskSchedule.setTaskDetails(updatedTaskScheduleDto.getTaskDetails());
                     taskScheduleRepository.save(taskSchedule);
                     return Mono.just(true);
                 })

@@ -2,8 +2,6 @@ package com.sprinboot.webflux.reactiverest.dtos;
 
 import org.springframework.http.HttpStatus;
 
-import java.net.http.HttpClient;
-import java.util.Date;
 
 public class ExceptionResponse {
     private HttpStatus httpStatus;
@@ -31,4 +29,6 @@ public class ExceptionResponse {
     public void setMessage(String message) {
         this.message = message;
     }
+
+
 }

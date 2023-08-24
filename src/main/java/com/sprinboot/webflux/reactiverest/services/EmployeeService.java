@@ -1,17 +1,22 @@
 package com.sprinboot.webflux.reactiverest.services;
 
+import com.sprinboot.webflux.reactiverest.dtos.EmployeeDto;
 import com.sprinboot.webflux.reactiverest.entities.Employee;
 import com.sprinboot.webflux.reactiverest.exceptions.ReactiveRestNotFountException;
+import com.sprinboot.webflux.reactiverest.mappers.EmployeeMapper;
 import com.sprinboot.webflux.reactiverest.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 public class EmployeeService implements IEmployeeService {
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Autowired
     public EmployeeService(EmployeeRepository employeeRepository) {
@@ -20,33 +25,31 @@ public class EmployeeService implements IEmployeeService {
 
 
     @Override
-    public Flux<Employee> getAllEmployee() {
-       return Flux.fromIterable(employeeRepository.findAll());
+    public Flux<EmployeeDto> getAllEmployee() {
+        return Flux.fromStream(employeeRepository.findAll().stream().map(EmployeeMapper.INSTANCE::toDto));
     }
 
     @Override
-    public Mono<Employee> getEmployeeById(int id) {
-       return Mono.fromCallable(()->employeeRepository.findById(id)
-                .orElseThrow(()->new ReactiveRestNotFountException("Resource is not found")));
+    public Mono<EmployeeDto> getEmployeeById(int id) {
+       return Mono.just(employeeRepository.findById(id).map(EmployeeMapper.INSTANCE::toDto)
+               .orElseThrow(()->new ReactiveRestNotFountException("Resource is not found")));
     }
 
     @Override
-    public Mono<Boolean> create(Employee employee) {
-        return Mono.fromCallable(()->employeeRepository.save(employee)!=null);
+    public Mono<Boolean> create(EmployeeDto employeeDto) {
+        return Mono.just(employeeRepository.save(EmployeeMapper.INSTANCE.toEntity(employeeDto))).hasElement();
     }
 
     @Override
-    public Mono<Boolean> update(Employee updatedEmployee, int id) {
-        return Mono.fromCallable(() -> {
-            return employeeRepository.findById(id)
-                    .map(employee -> {
-                        employee.setName(updatedEmployee.getName());
-                        employee.setDepartment(updatedEmployee.getDepartment());
-                        employeeRepository.save(employee);
-                        return true;
-                    })
-                    .orElseThrow(() -> new ReactiveRestNotFountException("Resource is not found"));
-        });
+    public Mono<Boolean> update(EmployeeDto updatedEmployeeDto, int id) {
+        return Mono.just(employeeRepository.findById(id)
+                .map(employee -> {
+                    employee.setName(updatedEmployeeDto.getName());
+                    employee.setDepartment(updatedEmployeeDto.getDepartment());
+                    employeeRepository.save(employee);
+                    return true;
+                })
+                .orElseThrow(() -> new ReactiveRestNotFountException("Resource is not found")));
     }
     @Override
     public Mono<Boolean> deleteEmployeeById(int id) {

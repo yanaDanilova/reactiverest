@@ -1,5 +1,6 @@
 package com.sprinboot.webflux.reactiverest.controllers;
 
+import com.sprinboot.webflux.reactiverest.dtos.TaskScheduleDto;
 import com.sprinboot.webflux.reactiverest.entities.TaskSchedule;
 import com.sprinboot.webflux.reactiverest.services.ITaskScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +13,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/taskSchedules")
 public class TaskScheduleController {
-    private ITaskScheduleService taskScheduleService;
+    private final ITaskScheduleService taskScheduleService;
 
     @Autowired
     public TaskScheduleController(ITaskScheduleService taskScheduleService) {
@@ -30,29 +31,29 @@ public class TaskScheduleController {
 
     @GetMapping()
     @Operation(description = "get the entire list of task schedule")
-    public Flux<TaskSchedule> getAllTaskSchedule(){
+    public Flux<TaskScheduleDto> getAllTaskSchedule(){
         return taskScheduleService.getAllTaskSchedule();
     }
     @GetMapping("/{id}")
     @Operation(description = "get a task schedule by ID")
-    public Mono<ResponseEntity<TaskSchedule>> getTaskScheduleById(@PathVariable int id){
-       Mono<TaskSchedule> taskScheduleMono = taskScheduleService.getTaskScheduleById(id);
-        return taskScheduleMono
-                .map(taskSchedule -> ResponseEntity.ok().body(taskSchedule))
+    public Mono<ResponseEntity<TaskScheduleDto>> getTaskScheduleById(@PathVariable int id){
+       Mono<TaskScheduleDto> taskScheduleDtoMono = taskScheduleService.getTaskScheduleById(id);
+        return taskScheduleDtoMono
+                .map(taskScheduleDto -> ResponseEntity.ok().body(taskScheduleDto))
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
 
     }
     @PostMapping
     @Operation(description = "Create a new Task Schedule")
-    public Mono<ResponseEntity<TaskSchedule>> createTaskSchedule(@RequestBody TaskSchedule newTaskSchedule){
-       return taskScheduleService.create(newTaskSchedule).map(taskSchedule -> ResponseEntity.ok().body(taskSchedule))
+    public Mono<ResponseEntity<TaskScheduleDto>> createTaskSchedule(@RequestBody TaskScheduleDto newTaskScheduleDto){
+       return taskScheduleService.create(newTaskScheduleDto).map(taskSchedule -> ResponseEntity.ok().body(taskSchedule))
                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
     @PutMapping("/{id}")
     @Operation(description = "Update the existing task schedule")
-    public Mono<ResponseEntity<Void>> updateTaskScheduleById(@RequestBody TaskSchedule updatedTaskSchedule, @PathVariable int id){
-        return taskScheduleService.update(updatedTaskSchedule,id).map(result->{
+    public Mono<ResponseEntity<Void>> updateTaskScheduleById(@RequestBody TaskScheduleDto updatedTaskScheduleDto, @PathVariable int id){
+        return taskScheduleService.update(updatedTaskScheduleDto,id).map(result->{
             if (result){
                 return ResponseEntity.ok().build();
             }else
