@@ -1,6 +1,5 @@
 package com.sprinboot.webflux.reactiverest.configs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprinboot.webflux.reactiverest.exceptions.CustomGlobalErrorHandler;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;

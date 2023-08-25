@@ -1,7 +1,5 @@
 package com.sprinboot.webflux.reactiverest.dtos;
 
-import com.sprinboot.webflux.reactiverest.entities.Employee;
-
 public class TaskScheduleDto {
 
     private int id;
@@ -13,9 +11,9 @@ public class TaskScheduleDto {
 
     private String taskDetails;
 
-    public TaskScheduleDto(int id, Employee employee, String taskDate, String assignedTask, String taskDetails) {
+    public TaskScheduleDto(int id, int employee_id, String taskDate, String assignedTask, String taskDetails) {
         this.id = id;
-        this.employee_id = employee.getId();
+        this.employee_id = employee_id;
         this.taskDate = taskDate;
         this.assignedTask = assignedTask;
         this.taskDetails = taskDetails;

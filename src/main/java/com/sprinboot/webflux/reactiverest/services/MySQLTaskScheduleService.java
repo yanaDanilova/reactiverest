@@ -41,8 +41,11 @@ public class MySQLTaskScheduleService implements ITaskScheduleService {
 
     @Override
     public Mono<TaskScheduleDto> create(TaskScheduleDto newTaskScheduleDto) {
-        TaskSchedule taskSchedule = TaskScheduleMapper.INSTANCE.toEntity(newTaskScheduleDto);
-        return Mono.just(TaskScheduleMapper.INSTANCE.toDto(taskScheduleRepository.save(taskSchedule)));
+        TaskSchedule taskSchedule = TaskScheduleMapper.INSTANCE.toEntity(newTaskScheduleDto, employeeRepository);
+
+        TaskSchedule result = taskScheduleRepository.save(taskSchedule);
+        TaskScheduleDto resultDto = TaskScheduleMapper.INSTANCE.toDto(result);
+        return Mono.just(resultDto);
 
     }
 

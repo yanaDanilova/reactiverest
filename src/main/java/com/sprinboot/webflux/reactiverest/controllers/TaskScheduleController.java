@@ -1,7 +1,6 @@
 package com.sprinboot.webflux.reactiverest.controllers;
 
 import com.sprinboot.webflux.reactiverest.dtos.TaskScheduleDto;
-import com.sprinboot.webflux.reactiverest.entities.TaskSchedule;
 import com.sprinboot.webflux.reactiverest.services.ITaskScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,7 @@ public class TaskScheduleController {
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
 
     }
-    @PostMapping
+    @PostMapping()
     @Operation(description = "Create a new Task Schedule")
     public Mono<ResponseEntity<TaskScheduleDto>> createTaskSchedule(@RequestBody TaskScheduleDto newTaskScheduleDto){
        return taskScheduleService.create(newTaskScheduleDto).map(taskSchedule -> ResponseEntity.ok().body(taskSchedule))
