@@ -1,6 +1,8 @@
 package com.sprinboot.webflux.reactiverest.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -11,8 +13,10 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Size(min = 2)
     @Column(name = "name")
     private String name;
+    @NotNull
     @Column(name = "department")
     private String department;
 

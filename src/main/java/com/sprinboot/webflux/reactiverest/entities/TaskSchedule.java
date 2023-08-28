@@ -1,6 +1,8 @@
 package com.sprinboot.webflux.reactiverest.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "taskschedule")
@@ -8,12 +10,17 @@ public class TaskSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
     private Employee employee;
 
+    @Size(min = 8)
     @Column(name = "taskDate")
     private String taskDate;
+
+    @Size(min = 2)
     @Column(name = "assignedTask")
     private String assignedTask;
     @Column(name = "taskDetails")

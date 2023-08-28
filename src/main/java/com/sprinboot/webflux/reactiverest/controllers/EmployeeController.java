@@ -1,10 +1,9 @@
 package com.sprinboot.webflux.reactiverest.controllers;
 
 import com.sprinboot.webflux.reactiverest.dtos.EmployeeDto;
-import com.sprinboot.webflux.reactiverest.entities.Employee;
-import com.sprinboot.webflux.reactiverest.entities.TaskSchedule;
 import com.sprinboot.webflux.reactiverest.services.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +39,7 @@ public class EmployeeController {
    }
    @PostMapping
    @Operation(description = "Create a new Employee")
-   public Mono<ResponseEntity<Void>> createEmployee(@RequestBody EmployeeDto newEmployeeDto){
+   public Mono<ResponseEntity<Void>> createEmployee(@Valid @RequestBody EmployeeDto newEmployeeDto){
       return employeeService.create(newEmployeeDto).map(result->{
          if (result){
             return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -53,7 +52,7 @@ public class EmployeeController {
 
    @PutMapping("/{id}")
    @Operation(description = "Update the existing employee by id")
-   public Mono<ResponseEntity<Void>> updateEmployeeById(@RequestBody EmployeeDto updatedEmployeeDto, @PathVariable int id){
+   public Mono<ResponseEntity<Void>> updateEmployeeById(@Valid @RequestBody EmployeeDto updatedEmployeeDto, @PathVariable int id){
       return employeeService.update(updatedEmployeeDto,id).map(result->{
          if (result){
             return ResponseEntity.ok().build();

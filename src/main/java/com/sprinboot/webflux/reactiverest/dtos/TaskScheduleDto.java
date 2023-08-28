@@ -1,12 +1,18 @@
 package com.sprinboot.webflux.reactiverest.dtos;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class TaskScheduleDto {
 
     private int id;
+    @NotNull(message = "Employee id cannot be null")
     private int employee_id;
 
+    @NotNull
     private String taskDate;
 
+    @Size(min = 2, max = 50, message = "Assigned task length must be between 2 and 50 characters")
     private String assignedTask;
 
     private String taskDetails;

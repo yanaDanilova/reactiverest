@@ -3,6 +3,7 @@ package com.sprinboot.webflux.reactiverest.controllers;
 import com.sprinboot.webflux.reactiverest.dtos.TaskScheduleDto;
 import com.sprinboot.webflux.reactiverest.services.ITaskScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,14 +45,14 @@ public class TaskScheduleController {
     }
     @PostMapping()
     @Operation(description = "Create a new Task Schedule")
-    public Mono<ResponseEntity<TaskScheduleDto>> createTaskSchedule(@RequestBody TaskScheduleDto newTaskScheduleDto){
+    public Mono<ResponseEntity<TaskScheduleDto>> createTaskSchedule(@Valid @RequestBody TaskScheduleDto newTaskScheduleDto){
        return taskScheduleService.create(newTaskScheduleDto).map(taskSchedule -> ResponseEntity.ok().body(taskSchedule))
                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
     @PutMapping("/{id}")
     @Operation(description = "Update the existing task schedule")
-    public Mono<ResponseEntity<Void>> updateTaskScheduleById(@RequestBody TaskScheduleDto updatedTaskScheduleDto, @PathVariable int id){
+    public Mono<ResponseEntity<Void>> updateTaskScheduleById(@Valid @RequestBody TaskScheduleDto updatedTaskScheduleDto, @PathVariable int id){
         return taskScheduleService.update(updatedTaskScheduleDto,id).map(result->{
             if (result){
                 return ResponseEntity.ok().build();
