@@ -2,8 +2,14 @@
 
 package com.sprinboot.webflux.reactiverest.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class DepartmentDto {
+
+    @JsonIgnore
     private int id;
+    @JsonProperty("department_name")
     private String title;
 
 

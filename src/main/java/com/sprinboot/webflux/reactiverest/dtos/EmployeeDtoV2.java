@@ -1,9 +1,12 @@
 package com.sprinboot.webflux.reactiverest.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+@JsonIgnoreProperties("id")
 public class EmployeeDtoV2 {
+
     private int id;
 
     @Size(min = 2, max = 50, message = "Name length must be between 2 and 50 characters")
