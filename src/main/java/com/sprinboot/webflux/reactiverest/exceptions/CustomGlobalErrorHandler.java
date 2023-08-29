@@ -57,5 +57,4 @@ public class CustomGlobalErrorHandler implements ErrorWebExceptionHandler {
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
         return exchange.getResponse().writeWith(Mono.just(dataBuffer));
     }
-
 }

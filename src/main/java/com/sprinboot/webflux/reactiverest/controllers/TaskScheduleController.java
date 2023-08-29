@@ -5,28 +5,33 @@ import com.sprinboot.webflux.reactiverest.services.ITaskScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Locale;
+
 @RestController
 @RequestMapping("/api/taskSchedules")
 public class TaskScheduleController {
+
+    private final MessageSource messageSource;
     private final ITaskScheduleService taskScheduleService;
 
     @Autowired
-    public TaskScheduleController(ITaskScheduleService taskScheduleService) {
+    public TaskScheduleController(MessageSource messageSource, ITaskScheduleService taskScheduleService) {
+        this.messageSource = messageSource;
         this.taskScheduleService = taskScheduleService;
     }
 
-    @GetMapping("/index")
-    @Operation(description = "Index of this controller")
+    @GetMapping("/greeting-internationalized")
+    @Operation(description = "greeting in different languages")
     public Mono<String> index(){
-        int i = 0;
-        int j = 1;
-        int k = j/i;
-        return Mono.just("Hello World!");
+        Locale locale= LocaleContextHolder.getLocale();
+        return Mono.just(messageSource.getMessage("greeting.message",null,locale));
     }
 
     @GetMapping()
@@ -46,8 +51,8 @@ public class TaskScheduleController {
     @PostMapping()
     @Operation(description = "Create a new Task Schedule")
     public Mono<ResponseEntity<TaskScheduleDto>> createTaskSchedule(@Valid @RequestBody TaskScheduleDto newTaskScheduleDto){
-       return taskScheduleService.create(newTaskScheduleDto).map(taskSchedule -> ResponseEntity.ok().body(taskSchedule))
-               .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+        return taskScheduleService.create(newTaskScheduleDto).map(taskSchedule -> ResponseEntity.ok().body(taskSchedule))
+                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
     @PutMapping("/{id}")
